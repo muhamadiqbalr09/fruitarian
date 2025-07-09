@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:fruitarian/screens/login_page.dart';
 import 'package:fruitarian/screens/home_page.dart';
 import 'package:fruitarian/services/auth_service.dart';
