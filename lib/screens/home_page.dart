@@ -1,16 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:fruitarian/services/auth_service.dart';
+import 'package:get/get.dart';
 import 'widgets/category_item.dart';
 import 'widgets/product_item.dart';
 import 'widgets/cart_item.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Homepage'),
+        title: const Text('Fruitarian'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              try {
+                await _authService.logout();
+                Get.snackbar(
+                  'Success',
+                  'Logged out successfully!',
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                );
+                // AuthWrapper will automatically handle navigation to login
+              } catch (e) {
+                Get.snackbar(
+                  'Error',
+                  'Failed to logout: ${e.toString()}',
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:fruitarian/screens/register_page.dart';
+import 'package:fruitarian/screens/home_page.dart';
+import 'package:fruitarian/services/auth_service.dart';
+import 'package:get/get.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+  
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +66,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: 'Enter Email',
                   border: OutlineInputBorder(
@@ -75,7 +92,8 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextField(
-                obscureText: true,
+                controller: _passwordController,
+                obscureText: !_isPasswordVisible,
                 decoration: InputDecoration(
                   hintText: 'Enter Password',
                   border: OutlineInputBorder(
@@ -86,6 +104,16 @@ class LoginPage extends StatelessWidget {
                     horizontal: 16,
                     vertical: 14,
                   ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -94,7 +122,15 @@ class LoginPage extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // TODO: Implement forgot password functionality
+                    Get.snackbar(
+                      'Info',
+                      'Forgot password feature coming soon!',
+                      backgroundColor: Colors.blue,
+                      colorText: Colors.white,
+                    );
+                  },
                   child: const Text(
                     'Forgot Password?',
                     style: TextStyle(color: Colors.green),
@@ -105,8 +141,67 @@ class LoginPage extends StatelessWidget {
 
               // Login Button
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home');
+                onPressed: () async {
+                  // Validasi input
+                  if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+                    Get.snackbar(
+                      'Error',
+                      'Please fill all fields',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  try {
+                    // Show loading
+                    Get.dialog(
+                      const Center(
+                        child: CircularProgressIndicator(color: Colors.green),
+                      ),
+                      barrierDismissible: false,
+                    );
+
+                    final loginResponse = await _authService.login(
+                      _emailController.text.trim(),
+                      _passwordController.text,
+                    );
+
+                    // Close loading dialog
+                    Get.back();
+
+                    if (loginResponse.user != null) {
+                      Get.snackbar(
+                        'Success',
+                        'Login successful!',
+                        backgroundColor: Colors.green,
+                        colorText: Colors.white,
+                        duration: const Duration(seconds: 2),
+                      );
+                      
+                      // Navigate to home page using GetX
+                      Get.offAll(() => HomePage());
+                    } else {
+                      Get.snackbar(
+                        'Error',
+                        'Login failed. Please check your credentials.',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                    }
+                  } catch (e) {
+                    // Close loading dialog if still open
+                    if (Get.isDialogOpen ?? false) {
+                      Get.back();
+                    }
+                    
+                    Get.snackbar(
+                      'Error',
+                      'Failed to login: ${e.toString()}',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -194,7 +289,9 @@ class LoginPage extends StatelessWidget {
                 children: [
                   const Text("Don't you have an account?"),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => RegisterPage());
+                    },
                     child: const Text(
                       'Sign up',
                       style: TextStyle(color: Colors.green),
