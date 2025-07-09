@@ -4,6 +4,8 @@ import 'widgets/product_item.dart';
 import 'widgets/cart_item.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,12 +123,12 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text('Checkout'),
-                ),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
                 ),
               ),
             ],

@@ -6,6 +6,8 @@ void main() {
 }
 
 class fruitarian extends StatelessWidget {
+  const fruitarian({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

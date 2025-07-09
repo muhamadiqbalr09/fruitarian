@@ -6,7 +6,7 @@ class ProductItem extends StatelessWidget {
   final int quantity;
   final IconData image;
   
-  const ProductItem({
+  const ProductItem({super.key, 
     required this.name,
     required this.price,
     required this.quantity,
