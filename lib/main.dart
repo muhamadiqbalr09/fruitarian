@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'screens/login_page.dart';
+import 'screens/home_page.dart';
 
 void main() {
-  runApp(fruitarian());
+  runApp(FruitarianApp());
 }
 
-class fruitarian extends StatelessWidget {
-  const fruitarian({super.key});
+class FruitarianApp extends StatelessWidget {
+  const FruitarianApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Shopping App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -18,7 +20,7 @@ class fruitarian extends StatelessWidget {
       ),
       home: LoginPage(),
       routes: {
-        '/home': (context) => fruitarian(),
+        '/home': (context) => HomePage(),
       },
     );
   }
